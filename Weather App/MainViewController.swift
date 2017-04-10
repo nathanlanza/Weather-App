@@ -14,21 +14,38 @@ class MainViewController: UITableViewController {
             tableView.reloadData()
         }
     }
+    @IBAction func refresh(_ sender: UIRefreshControl) {
+        forecasts = []
+        getForecasts {
+            sender.endRefreshing()
+        }
+    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
+    func getForecasts(doneHandler: (() -> ())? = nil) {
         WeatherModel.main.getTenDayForecast { forecasts, error in
             if let error = error {
-                print(error) //TODO - Handle this properly
+                let alert = UIAlertController(title: "Error", message: "There was an error:\n " + error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+                
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: nil)
+                    doneHandler?()
+                }
             }
             
             guard let forecasts = forecasts else { return }
             
             DispatchQueue.main.async {
                 self.forecasts = forecasts
+                doneHandler?()
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        getForecasts()
     }
     
     
@@ -37,7 +54,6 @@ class MainViewController: UITableViewController {
 
 //Navigation
 extension MainViewController {
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let detail = segue.destination as? DetailViewController else { fatalError("This should always successfully return a DetailViewController") }
         guard let cell = sender as? ForecastCell else { fatalError("This should always be a forecastcell") }
@@ -46,10 +62,7 @@ extension MainViewController {
         let forecast = forecasts[index.row]
         detail.title = "Forecast for " + forecast.city.city
         detail.forecast = forecast
-        
-        
     }
-    
 }
 
 

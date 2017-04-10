@@ -59,6 +59,12 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="vuz-EQ-3du"/>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="Nx1-hI-tys">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="refresh:" destination="lKL-8Q-f5p" eventType="valueChanged" id="o1t-o0-nAo"/>
+                        </connections>
+                    </refreshControl>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o6N-uj-vUm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
