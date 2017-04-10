@@ -1,11 +1,15 @@
 import Foundation
 
-class WeatherModel {
-    static let main = WeatherModel()
-    let urlString = "http://api.openweathermap.org/data/2.5/forecast/daily?q=Winter%20Park,FL&mode=json&units=metric&cnt=14&appid=f8fdae74c29544baebdb927d392c5538"
+protocol WeatherModel {
+    func getDailyForecast(completion: @escaping ([Forecast]?,Error?) -> Void)
+}
+
+class OpenWeatherMapModel: WeatherModel {
+    static let main = OpenWeatherMapModel()
+    private let urlString = "http://api.openweathermap.org/data/2.5/forecast/daily?q=Winter%20Park,FL&mode=json&units=metric&cnt=14&appid=f8fdae74c29544baebdb927d392c5538"
     private init() { }
     
-    func getTenDayForecast(completion: @escaping ([Forecast]?,Error?) -> Void) {
+    func getDailyForecast(completion: @escaping ([Forecast]?,Error?) -> Void) {
         guard let url = URL(string: urlString) else { fatalError("Check urlString") }
         let session = URLSession.shared
         
@@ -24,7 +28,6 @@ class WeatherModel {
             } catch let newError {
                 jsonError = newError
             }
-            print(forecasts)
             completion(forecasts,jsonError)
             
         }).resume()

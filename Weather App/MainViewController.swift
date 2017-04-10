@@ -9,6 +9,8 @@ class MainViewController: UITableViewController {
         
     }
     
+    let weatherModel: WeatherModel = OpenWeatherMapModel.main
+    
     var forecasts: [Forecast] = [] {
         didSet {
             tableView.reloadData()
@@ -22,7 +24,7 @@ class MainViewController: UITableViewController {
     }
     
     func getForecasts(doneHandler: (() -> ())? = nil) {
-        WeatherModel.main.getTenDayForecast { forecasts, error in
+        weatherModel.getDailyForecast { forecasts, error in
             if let error = error {
                 let alert = UIAlertController(title: "Error", message: "There was an error:\n " + error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
